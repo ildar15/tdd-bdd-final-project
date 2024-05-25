@@ -201,5 +201,42 @@ class TestProductModel(unittest.TestCase):
         product.description = "testing"
         original_id = product.id
         product.id = None
-        self.assertRaises(DataValidationError,product.update())
+        self.assertRaises(DataValidationError,product.update)
+
+    def test_deserialize_invalid_type_for_available(self):
+        """It should raise exception DataValidationError Invalid type for boolean"""
+        product = ProductFactory()
+        dict_test = product.serialize()
+        dict_test["available"] = None
+        self.assertRaises(DataValidationError,product.deserialize,dict_test)
+
+    def test_deserialize_invalid_attribute(self):
+        """It should raise exception DataValidationError Invalid attribute"""
+        product = ProductFactory()
+        dict_test = product.serialize()
+        dict_test["category"] = "999"
+        self.assertRaises(DataValidationError,product.deserialize,dict_test)
+    
+    def test_deserialize_invalid_product(self):
+        """ Invalid product It should raise exception DataValidationError: body of request contained bad or no data"""
+        product = ProductFactory()
+        dict_test = product.serialize()
+        dict_test["category"] = "999"
+        self.assertRaises(DataValidationError,product.deserialize,dict_test)
         
+    def test_find_by_price(self):
+        """It should Find Products by Price"""
+        products = ProductFactory.create_batch(10)
+        for product in products:
+            product.create()
+        price = products[0].price
+        count = len([product for product in products if product.price == price])
+        found = Product.find_by_price(price)
+        self.assertEqual(found.count(), count)
+        for product in found:
+            self.assertEqual(product.price, price)
+        price_str=str(price)
+        fount_by_str = Product.find_by_price(price_str)
+        self.assertEqual(found.count(), count)
+        for product in found:
+            self.assertEqual(product.price, price)
