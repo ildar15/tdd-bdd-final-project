@@ -33,7 +33,6 @@ from service import app
 from service.common import status
 from service.models import db, init_db, Product
 from tests.factories import ProductFactory
-import time
 
 # Disable all but critical errors during normal test run
 # uncomment for debugging failing tests
@@ -211,19 +210,17 @@ class TestProductRoutes(TestCase):
         updated_product = response.get_json()
         self.assertEqual(updated_product["description"], "unknown")
 
-    
     def test_update_not_found(self):
         """It should return 404"""
         # get the id of a product
         test_product = ProductFactory()
         test_product.id = 0
-        response = self.client.put(f"{BASE_URL}/{test_product.id}",json=test_product.serialize())
+        response = self.client.put(f"{BASE_URL}/{test_product.id}", json=test_product.serialize())
         self.assertEqual(response.status_code, status.HTTP_404_NOT_FOUND)
 
     def test_delete_product(self):
         """It should Delete a Product"""
         products = self._create_products(5)
-        #time.sleep(1)
         product_count = self.get_product_count()
         test_product = products[0]
         response = self.client.delete(f"{BASE_URL}/{test_product.id}")
