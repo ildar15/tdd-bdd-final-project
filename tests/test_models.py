@@ -199,30 +199,29 @@ class TestProductModel(unittest.TestCase):
         product.id = None
         product.create()
         product.description = "testing"
-        original_id = product.id
         product.id = None
-        self.assertRaises(DataValidationError,product.update)
+        self.assertRaises(DataValidationError, product.update)
 
     def test_deserialize_invalid_type_for_available(self):
         """It should raise exception DataValidationError Invalid type for boolean"""
         product = ProductFactory()
         dict_test = product.serialize()
         dict_test["available"] = None
-        self.assertRaises(DataValidationError,product.deserialize,dict_test)
+        self.assertRaises(DataValidationError, product.deserialize, dict_test)
 
     def test_deserialize_invalid_attribute(self):
         """It should raise exception DataValidationError Invalid attribute"""
         product = ProductFactory()
         dict_test = product.serialize()
         dict_test["category"] = "999"
-        self.assertRaises(DataValidationError,product.deserialize,dict_test)
-    
+        self.assertRaises(DataValidationError, product.deserialize, dict_test)
+
     def test_deserialize_invalid_product(self):
         """ Invalid product It should raise exception DataValidationError: body of request contained bad or no data"""
         product = ProductFactory()
         dict_test = []
-        self.assertRaises(DataValidationError,product.deserialize,dict_test)
-        
+        self.assertRaises(DataValidationError, product.deserialize, dict_test)
+
     def test_find_by_price(self):
         """It should Find Products by Price"""
         products = ProductFactory.create_batch(10)
@@ -234,8 +233,8 @@ class TestProductModel(unittest.TestCase):
         self.assertEqual(found.count(), count)
         for product in found:
             self.assertEqual(product.price, price)
-        price_str=str(price)
-        fount_by_str = Product.find_by_price(price_str)
-        self.assertEqual(found.count(), count)
+        price_str = str(price)
+        found_by_str = Product.find_by_price(price_str)
+        self.assertEqual(found_by_str.count(), count)
         for product in found:
             self.assertEqual(product.price, price)
