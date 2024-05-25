@@ -220,8 +220,7 @@ class TestProductModel(unittest.TestCase):
     def test_deserialize_invalid_product(self):
         """ Invalid product It should raise exception DataValidationError: body of request contained bad or no data"""
         product = ProductFactory()
-        dict_test = product.serialize()
-        dict_test["category"] = "999"
+        dict_test = []
         self.assertRaises(DataValidationError,product.deserialize,dict_test)
         
     def test_find_by_price(self):
